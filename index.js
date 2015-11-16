@@ -4,7 +4,7 @@ var gulp = require('gulp'),
     utils = require('./utils'),
     config = require('./config')
 
-exports.buildTypescriptTask = () => {
+exports.registerTasks = () => {
 
     // create the gulp task and the "on changed" handler
     gulp.task('browserify:build-ts', ['check-tsconfig'], next => {
