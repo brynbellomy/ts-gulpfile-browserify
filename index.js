@@ -4,19 +4,29 @@ var gulp = require('gulp'),
     utils = require('./utils'),
     config = require('./config')
 
-exports.registerTasks = () => {
+require('ts-gulpfile-typescript')
+
+exports.registerTasks = (opts) => {
+    let options = {
+        minify: opts.minify || true,
+        mangle: opts.mangle || false,
+        debug: opts.debug || true,
+        basedir: opts.basedir || '.',
+        buildDir: opts.buildDir || 'build',
+        entryPoints: opts.entryPoints || [],
+    }
 
     // create the gulp task and the "on changed" handler
-    gulp.task('browserify:build-ts', ['check-tsconfig'], next => {
+    gulp.task('browserify:build-ts', ['ts:check-tsconfig'], next => {
         const bundle = utils.initBrowserifyForTypescript({
-            entries: config.ENTRY_POINTS,
-            debug: config.DEBUG,
-            basedir: '.'
+            entries: options.entryPoints,
+            debug: options.debug,
+            basedir: options.baseDir
         })
 
-        return utils.generateBundle(bundle, config.BUILD_DIR)(next)
+        return utils.generateBundle(bundle, options.buildDir)(next)
                     .then(x => {
-                        utils.watchForChanges(bundle, config.BUILD_DIR)
+                        utils.watchForChanges(bundle, options.buildDir)
                         return x
                     })
     })
